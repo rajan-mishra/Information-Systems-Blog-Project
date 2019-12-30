@@ -2,3 +2,5 @@
 2) Registered users should be allowed to create,edit and delete a blog.
 3) any visitor to the site should be able to view the blog written by users.
 4) As a developer we will be creating a front end and connect it to a sql backend using flask.
+
+error 404 need to check
