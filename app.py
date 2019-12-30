@@ -20,6 +20,11 @@ def login():
 def blogs():
     return render_template('blogs.html')
 
+@app.route('/register')
+def register():
+    return render_template('register.html')
+
+
 @app.route('/editblogs')
 def editblogs():
     return render_template('editblogs.html')
