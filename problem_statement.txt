@@ -1,3 +1,4 @@
 1) A user should be able to register an account and login to his account.
 2) Registered users should be allowed to create,edit and delete a blog.
 3) any visitor to the site should be able to view the blog written by users.
+4) 
