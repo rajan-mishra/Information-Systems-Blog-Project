@@ -100,6 +100,10 @@ def writeblog():
         title = blogpost['title']
         body = blogpost['body']
         author = session['firstName'] + ' ' + session['lastName']
+        sql = "INSERT INTO blog (title, author, body) VALUES (%s,%s,%s)"
+        cursor.execute(sql, (title, author, body))
+        conn.commit()
+        conn.close()
 		
     return render_template('writeblog.html')
 
