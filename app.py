@@ -24,7 +24,11 @@ ckeditor = CKEditor(app)
 app.config['SECRET_KEY'] = os.urandom(24)
 @app.route('/')
 def index():
-    return render_template('index.html')
+    result_blog = cursor.execute("SELECT * FROM blog")
+    if result_blog > 0:
+        blogs = cursor.fetchall()
+        return render_template('index.html', blogs=blogs)        
+    return render_template('index.html',blogs=None)
 
 @app.route('/about')
 def about():
@@ -45,14 +49,14 @@ def login():
 				session['lastName'] = user[2]
 				flash('Welcome ' + session['firstName'] +'! You have been successfully logged in', 'success')
 			else:
-				conn.close()
+				#conn.close()
 				flash('Password does not match', 'danger')
 				return render_template('login.html')
 		else:
-			conn.close()
+			#conn.close()
 			flash('Username does not exist', 'danger')
 			return render_template('login.html')
-		conn.close()
+		#conn.close()
 		return redirect('/')
 	return render_template('login.html')
 
@@ -71,7 +75,7 @@ def register():
 		cursor.execute(sql, (userDetails['first_name'], userDetails['last_name'],userDetails['username'], userDetails['email'], generate_password_hash(userDetails['password'])))
 		conn.commit()
 		flash('Registration successful! Please login.', 'success')
-		conn.close()
+		#conn.close()
 		return redirect('/login')
 	return render_template('register.html')
 
@@ -100,10 +104,11 @@ def writeblog():
         title = blogpost['title']
         body = blogpost['body']
         author = session['firstName'] + ' ' + session['lastName']
+        cursor = conn.cursor()
         sql = "INSERT INTO blog (title, author, body) VALUES (%s,%s,%s)"
         cursor.execute(sql, (title, author, body))
         conn.commit()
-        conn.close()
+        #conn.close()
 
     return render_template('writeblog.html')
 
