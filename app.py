@@ -54,6 +54,12 @@ def register():
         if userDetails['password'] != userDetails['confirm_password']:
             flash('Passwords do not match! Please enter same password in both the feilds.','danger')
             return render_template('register.html')
+        my_cursor = mysql.connection.cursor()
+        my_cursor.execute("INSERT INTO user(first_name, last_name, username, email, password) "\
+        "VALUES(%s,%s,%s,%s,%s)",(userDetails['first_name'], userDetails['last_name'], \
+        userDetails['username'], userDetails['email'], userDetails['password']))
+        mydb.connection.commit()
+        my_cursor.close()
     return render_template('register.html')
 
 
