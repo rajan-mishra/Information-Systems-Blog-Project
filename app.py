@@ -4,6 +4,7 @@ import pymysql.cursors
 import os
 from flask_ckeditor import CKEditor
 import pymysql
+from werkzeug.security import generate_password_hash
 
 host = "localhost"
 user = "root"
@@ -31,7 +32,29 @@ def about():
 
 @app.route('/login/', methods=['GET','POST'])
 def login():
-    return render_template('login.html')
+	if request.method == 'POST':
+		userDetails = request.form
+		username = userDetails['username']
+		res_data=cursor.execute("SELECT * FROM users WHERE username = %s", ([username]))
+		#res_data = cursor.fetchall()
+		if res_data > 0:
+			user = cursor.fetchone()
+			if userDetails['password'] == user[5]:
+				session['login'] = True
+				session['firstName'] = user[1]
+				session['lastName'] = user[2]
+				flash('Welcome ' + session['firstName'] +'! You have been successfully logged in', 'success')
+			else:
+				conn.close()
+				flash('Password does not match', 'danger')
+				return render_template('login.html')
+		else:
+			conn.close()
+			flash('Username does not exist', 'danger')
+			return render_template('login.html')
+		conn.close()
+		return redirect('/')
+	return render_template('login.html')
 
 @app.route('/blogs/<int:id>/')
 def blogs(id):
@@ -45,7 +68,7 @@ def register():
 			flash('Passwords do not match! Please enter same password in both the feilds.','danger')
 			return render_template('register.html')
 		sql ="INSERT INTO users (first_name, last_name, username, email, password) VALUES (%s,%s,%s,%s,%s) "
-		cursor.execute(sql, (userDetails['first_name'], userDetails['last_name'],userDetails['username'], userDetails['email'], userDetails['password']))
+		cursor.execute(sql, (userDetails['first_name'], userDetails['last_name'],userDetails['username'], userDetails['email'], generate_password_hash(userDetails['password'])))
 		conn.commit()
 		flash('Registration successful! Please login.', 'success')
 		conn.close()
@@ -72,6 +95,12 @@ def logout():
 
 @app.route('/writeblog/', methods=['GET','POST'])
 def writeblog():
+	if request.method == 'POST':
+        blogpost = request.form
+        title = blogpost['title']
+        body = blogpost['body']
+        author = session['firstName'] + ' ' + session['lastName']
+		
     return render_template('writeblog.html')
 
 if __name__ == '__main__' :
