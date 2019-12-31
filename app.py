@@ -3,6 +3,31 @@ from flask_bootstrap import Bootstrap
 import mysql.connector
 import os
 
+import mysql.connector
+
+#con = mysql.connector.connect(
+#user = "ardit700_student",
+#password="ardit700_student",
+#host = "108.167.140.122",
+#database = "ardit700_pm1database"
+#)
+
+mydb = mysql.connector.connect(
+	host = "localhost",
+	user = "root",
+	passwd = "password@1",
+	database = "blogbackend"
+	)
+
+my_cursor = mydb.cursor()
+
+#my_cursor.execute("CREATE DATABASE blogbackend")
+
+my_cursor.execute("CREATE TABLE users (user_id INTEGER(255) auto_increment PRIMARY KEY , first_name VARCHAR(255), last_name VARCHAR(255), username VARCHAR(255) UNIQUE, email VARCHAR(255) UNIQUE, password VARCHAR(255))")
+my_cursor.execute("CREATE TABLE blog (blog_id INTEGER(255) auto_increment PRIMARY KEY, title VARCHAR(255), author VARCHAR(255), body VARCHAR(255))")
+
+mydb.commit()
+
 app = Flask(__name__)
 Bootstrap(app)
 app.config['SECRET_KEY'] = os.urandom(24)
@@ -29,12 +54,6 @@ def register():
         if userDetails['password'] != userDetails['confirm_password']:
             flash('Passwords do not match! Please enter same password in both the feilds.','danger')
             return render_template('register.html')
-        my_cursor = mysql.connection.cursor()
-        my_cursor.execute("INSERT INTO user(first_name, last_name, username, email, password) "\
-        "VALUES(%s,%s,%s,%s,%s)",(userDetails['first_name'], userDetails['last_name'], \
-        userDetails['username'], userDetails['email'], userDetails['password']))
-        mydb.connection.commit()
-        my_cursor.close()
     return render_template('register.html')
 
 
