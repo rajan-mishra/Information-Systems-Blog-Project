@@ -95,12 +95,13 @@ def logout():
 
 @app.route('/writeblog/', methods=['GET','POST'])
 def writeblog():
-	if request.method == 'POST':
+    if request.method == 'POST':
         blogpost = request.form
         title = blogpost['title']
         body = blogpost['body']
         author = session['firstName'] + ' ' + session['lastName']
-		
+        
+
     return render_template('writeblog.html')
 
 if __name__ == '__main__' :
