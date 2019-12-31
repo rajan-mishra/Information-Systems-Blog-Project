@@ -90,24 +90,45 @@ def register():
 
 
 @app.route('/editblogs/<int:id>/', methods=['GET','POST'])
-def editblogs():
-    return render_template('editblogs.html')
+def editblogs(id):
+    if request.method == 'POST':
+        title = request.form['title']
+        body = request.form['body']
+        cursor.execute("UPDATE blog SET title = %s, body = %s where blog_id = %s",(title, body, id))
+        conn.commit()
+        flash('Blog updated successfully', 'success')
+        return redirect('/blogs/{}'.format(id))
+    result_value = cursor.execute("SELECT * FROM blog WHERE blog_id = {}".format(id))
+    if result_value > 0:
+        blog = cursor.fetchone()
+        blog_form = {}
+        blog_form['title'] = blog['title']
+        blog_form['body'] = blog['body']
+        return render_template('editblogs.html', blog_form=blog_form)
+
 
 @app.route('/deleteblogs/<int:id>/')
 def deleteblogs(id):
-	cursor.excute("DELETE FROM blog WHERE blog_id = {}".format(id))
+	cursor.execute("DELETE FROM blog WHERE blog_id = {}".format(id))
 	conn.commit()
 	flash ("Your Blog has been successfully deleted", "success")
 	return redirect ('/myblogs')
-    return render_template('deleteblogs.html')
 
 @app.route('/myblogs/')
 def myblogs():
-    return render_template('myblogs.html')
+    author = session['firstName'] + ' ' + session['lastName']
+    myblog = cursor1.execute("SELECT * FROM blog WHERE author = %s",[author])
+    if myblog > 0:
+        my_blogs = cursor1.fetchall()
+        return render_template('myblogs.html',my_blogs=my_blogs)
+    return render_template('my_blogs.html',my_blogs=None)
 
 @app.route('/logout/')
 def logout():
-    return render_template('logout.html')
+    session.clear()
+    flash("You have been logged out", 'info')
+    return redirect('/')
+
 
 @app.route('/writeblog/', methods=['GET','POST'])
 def writeblog():
