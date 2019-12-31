@@ -94,7 +94,11 @@ def editblogs():
     return render_template('editblogs.html')
 
 @app.route('/deleteblogs/<int:id>/')
-def deleteblogs():
+def deleteblogs(id):
+	cursor.excute("DELETE FROM blog WHERE blog_id = {}".format(id))
+	conn.commit()
+	flash ("Your Blog has been successfully deleted", "success")
+	return redirect ('/myblogs')
     return render_template('deleteblogs.html')
 
 @app.route('/myblogs/')
