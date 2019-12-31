@@ -4,6 +4,7 @@ import pymysql.cursors
 import os
 from flask_ckeditor import CKEditor
 import pymysql
+from pymysql import cursors
 from werkzeug.security import generate_password_hash
 
 host = "localhost"
@@ -13,8 +14,10 @@ password = "password@1"
 dbname = "blogbackend"
 
 conn = pymysql.connect(host, user=user, port=port,
-                       password=password, db=dbname)
+                       password=password, db=dbname, cursorclass=pymysql.cursors.DictCursor)
 cursor = conn.cursor()
+
+cursor1 = conn.cursor(cursors.DictCursor)
 
 
 app = Flask(__name__)
@@ -24,10 +27,10 @@ ckeditor = CKEditor(app)
 app.config['SECRET_KEY'] = os.urandom(24)
 @app.route('/')
 def index():
-    result_blog = cursor.execute("SELECT * FROM blog")
+    result_blog = cursor1.execute("SELECT * FROM blog")
     if result_blog > 0:
-        blogs = cursor.fetchall()
-        return render_template('index.html', blogs=blogs)        
+        blogs = cursor1.fetchall()
+        return render_template('index.html', blogs=blogs)
     return render_template('index.html',blogs=None)
 
 @app.route('/about')
@@ -62,11 +65,12 @@ def login():
 
 @app.route('/blogs/<int:id>/')
 def blogs(id):
-	my_blog = cursor.execute("SELECT * FROM BLOG WHERE blog_id ={}", format(id))
-	if my_blog > 0 :
-		blog = fetchone()
-		return render_template('blog.html', blog=blog)
-    return "Blog does not exist"
+    result_blog = cursor1.execute("SELECT * FROM blog WHERE blog_id = {}".format(id))
+    if result_blog > 0 :
+        blog = cursor1.fetchone()
+        return render_template('blogs.html', blog= blog)
+
+    return "Blog Not Found"
 
 @app.route('/register/', methods=['GET','POST'] )
 def register():
@@ -112,7 +116,9 @@ def writeblog():
         sql = "INSERT INTO blog (title, author, body) VALUES (%s,%s,%s)"
         cursor.execute(sql, (title, author, body))
         conn.commit()
+        flash("Successfully posted new blog", 'success')
         #conn.close()
+        return redirect('/')
 
     return render_template('writeblog.html')
 
