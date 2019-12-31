@@ -62,7 +62,11 @@ def login():
 
 @app.route('/blogs/<int:id>/')
 def blogs(id):
-    return render_template('blogs.html', blog_id = id)
+	my_blog = cursor.execute("SELECT * FROM BLOG WHERE blog_id ={}", format(id))
+	if my_blog > 0 :
+		blog = fetchone()
+		return render_template('blog.html', blog=blog)
+    return "Blog does not exist"
 
 @app.route('/register/', methods=['GET','POST'] )
 def register():
