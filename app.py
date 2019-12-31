@@ -42,14 +42,14 @@ def login():
 	if request.method == 'POST':
 		userDetails = request.form
 		username = userDetails['username']
-		res_data=cursor.execute("SELECT * FROM users WHERE username = %s", ([username]))
+		res_data=cursor1.execute("SELECT * FROM users WHERE username = %s", ([username]))
 		#res_data = cursor.fetchall()
 		if res_data > 0:
-			user = cursor.fetchone()
-			if userDetails['password'] == user[5]:
+			user = cursor1.fetchone()
+			if userDetails['password'] == user['password']:
 				session['login'] = True
-				session['firstName'] = user[1]
-				session['lastName'] = user[2]
+				session['firstName'] = user['first_name']
+				session['lastName'] = user['last_name']
 				flash('Welcome ' + session['firstName'] +'! You have been successfully logged in', 'success')
 			else:
 				#conn.close()
