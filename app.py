@@ -1,11 +1,11 @@
 from flask import Flask, render_template, session, flash, request, redirect
 from flask_bootstrap import Bootstrap
-from flask_mysqldb import flask_mysqldb
+import mysql.connector
 import os
 
 app = Flask(__name__)
 Bootstrap(app)
-
+app.config['SECRET_KEY'] = os.urandom(24)
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -24,6 +24,11 @@ def blogs(id):
 
 @app.route('/register/', methods=['GET','POST'] )
 def register():
+    if request.method == 'POST':
+        userDetails = request.form
+        if userDetails['password'] != userDetails['confirm_password']:
+            flash('Passwords do not match! Please enter same password in both the feilds.','danger')
+            return render_template('register.html')
     return render_template('register.html')
 
 
