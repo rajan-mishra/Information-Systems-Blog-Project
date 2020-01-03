@@ -10,11 +10,11 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 
 
-password = "password@1"
-dbname = "blogbackend"
+
+
 
 conn = pymysql.connect(host = "localhost", user = "root", port = 3306,
-                       password=password, db=dbname, cursorclass=pymysql.cursors.DictCursor)
+                       password = "password@1", dbname = "blogbackend", cursorclass=pymysql.cursors.DictCursor)
 cursor = conn.cursor()
 
 cursor1 = conn.cursor(cursors.DictCursor)
