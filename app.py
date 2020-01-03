@@ -37,7 +37,7 @@ app.config['SECRET_KEY'] = os.urandom(24)
 
 @app.route('/')
 def index():
-    result_blog = cursor1.execute("SELECT * FROM blog")
+    result_blog = cursor1.execute("SELECT * FROM blog order by blog_id desc")
     if result_blog > 0:
         blogs = cursor1.fetchall()
         return render_template('index.html', blogs=blogs)
@@ -84,18 +84,30 @@ def blogs(id):
 
 @app.route('/register/', methods=['GET','POST'] )
 def register():
-	if request.method == 'POST':
-		userDetails = request.form
-		if userDetails['password'] != userDetails['confirm_password']:
-			flash('Passwords do not match! Please enter same password in both the feilds.','danger')
-			return render_template('register.html')
-		sql ="INSERT INTO users (first_name, last_name, username, email, password) VALUES (%s,%s,%s,%s,%s) "
-		cursor.execute(sql, (userDetails['first_name'], userDetails['last_name'],userDetails['username'], userDetails['email'], generate_password_hash(userDetails['password'])))
-		conn.commit()
-		flash('Registration successful! Please login.', 'success')
-		#conn.close()
-		return redirect('/login')
-	return render_template('register.html')
+    if request.method == "POST":
+        userDetails = request.form
+        useremail = userDetails['email']
+        username = userDetails['username']
+        res_data = cursor1.execute("SELECT * FROM users WHERE email = %s", ([useremail]))
+        if res_data > 0:
+            flash("Email address already exists.", "danger")
+            return render_template("register.html")
+        res_data = cursor1.execute("SELECT * FROM users WHERE username = %s", ([username]))
+        if res_data > 0:
+            flash("Username already exists.", "danger")
+            return render_template("register.html")
+        if userDetails['password'] != userDetails['confirm_password']:
+            flash('Passwords do not match! Please enter same password in both the feilds.','danger')
+            return render_template('register.html')
+        sql ="INSERT INTO users (first_name, last_name, username, email, password) VALUES (%s,%s,%s,%s,%s) "
+        cursor.execute(sql, (userDetails['first_name'], userDetails['last_name'],userDetails['username'], userDetails['email'], generate_password_hash(userDetails['password'])))
+        conn.commit()
+        flash('Registration successful! Please login.', 'success')
+        return redirect('/login')
+        
+
+
+    return render_template("register.html")
 
 
 
@@ -131,7 +143,7 @@ def myblogs():
     if myblog > 0:
         my_blogs = cursor1.fetchall()
         return render_template('myblogs.html',my_blogs=my_blogs)
-    return render_template('my_blogs.html',my_blogs=None)
+    return render_template('myblogs.html',my_blogs=None)
 
 @app.route('/logout/')
 def logout():
