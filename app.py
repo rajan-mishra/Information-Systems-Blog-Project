@@ -5,7 +5,6 @@ from flask_ckeditor import CKEditor
 import pymysql
 from pymysql import cursors
 from werkzeug.security import generate_password_hash, check_password_hash
-import stripe
 
 
 host = "localhost"
@@ -28,10 +27,6 @@ ckeditor = CKEditor(app)
 
 app.config['SECRET_KEY'] = os.urandom(24)
 
-#stripe_keys = {
-#  'secret_key': os.environ['SECRET_KEY'],
-#  'publishable_key': os.environ['PUBLISHABLE_KEY']
-#}
 
 
 
