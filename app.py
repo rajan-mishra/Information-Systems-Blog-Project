@@ -6,13 +6,6 @@ import pymysql
 from pymysql import cursors
 from werkzeug.security import generate_password_hash, check_password_hash
 
-
-
-
-
-
-
-
 conn = pymysql.connect(host = "localhost", user = "root", port = 3306,
                        password = "password@1", db = "blogbackend", cursorclass=pymysql.cursors.DictCursor)
 cursor = conn.cursor()
@@ -24,9 +17,6 @@ Bootstrap(app)
 ckeditor = CKEditor(app)
 
 app.config['SECRET_KEY'] = os.urandom(24)
-
-
-
 
 @app.route('/')
 def index():
@@ -46,7 +36,7 @@ def login():
 		userDetails = request.form
 		username = userDetails['username']
 		res_data=cursor1.execute("SELECT * FROM users WHERE username = %s", ([username]))
-		
+
 		if res_data > 0:
 			user = cursor1.fetchone()
 			if check_password_hash(user['password'],userDetails['password']):
@@ -97,12 +87,7 @@ def register():
         conn.commit()
         flash('Registration successful! Please login.', 'success')
         return redirect('/login')
-        
-
-
     return render_template("register.html")
-
-
 
 @app.route('/editblogs/<int:id>/', methods=['GET','POST'])
 def editblogs(id):
