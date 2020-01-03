@@ -36,7 +36,6 @@ def login():
 		userDetails = request.form
 		username = userDetails['username']
 		res_data=cursor1.execute("SELECT * FROM users WHERE username = %s", ([username]))
-
 		if res_data > 0:
 			user = cursor1.fetchone()
 			if check_password_hash(user['password'],userDetails['password']):
@@ -45,14 +44,11 @@ def login():
 				session['lastName'] = user['last_name']
 				flash('Welcome ' + session['firstName'] +'! You have been successfully logged in', 'success')
 			else:
-				#conn.close()
 				flash('Password does not match', 'danger')
 				return render_template('login.html')
 		else:
-			#conn.close()
 			flash('Username does not exist', 'danger')
 			return render_template('login.html')
-		#conn.close()
 		return redirect('/')
 	return render_template('login.html')
 
@@ -137,12 +133,10 @@ def writeblog():
         title = blogpost['title']
         body = blogpost['body']
         author = session['firstName'] + ' ' + session['lastName']
-        cursor = conn.cursor()
         sql = "INSERT INTO blog (title, author, body) VALUES (%s,%s,%s)"
         cursor.execute(sql, (title, author, body))
         conn.commit()
         flash("Successfully posted new blog", 'success')
-        #conn.close()
         return redirect('/')
 
     return render_template('writeblog.html')
