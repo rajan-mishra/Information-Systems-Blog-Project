@@ -14,7 +14,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 
 conn = pymysql.connect(host = "localhost", user = "root", port = 3306,
-                       password = "password@1", dbname = "blogbackend", cursorclass=pymysql.cursors.DictCursor)
+                       password = "password@1", db = "blogbackend", cursorclass=pymysql.cursors.DictCursor)
 cursor = conn.cursor()
 
 cursor1 = conn.cursor(cursors.DictCursor)
@@ -46,7 +46,7 @@ def login():
 		userDetails = request.form
 		username = userDetails['username']
 		res_data=cursor1.execute("SELECT * FROM users WHERE username = %s", ([username]))
-		#res_data = cursor.fetchall()
+		
 		if res_data > 0:
 			user = cursor1.fetchone()
 			if check_password_hash(user['password'],userDetails['password']):
