@@ -7,18 +7,17 @@ from pymysql import cursors
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
-host = "localhost"
-user = "root"
-port = 3306
+
+
+
 password = "password@1"
 dbname = "blogbackend"
 
-conn = pymysql.connect(host, user=user, port=port,
+conn = pymysql.connect(host = "localhost", user = "root", port = 3306,
                        password=password, db=dbname, cursorclass=pymysql.cursors.DictCursor)
 cursor = conn.cursor()
 
 cursor1 = conn.cursor(cursors.DictCursor)
-
 
 app = Flask(__name__)
 Bootstrap(app)
