@@ -1,11 +1,12 @@
 from flask import Flask, render_template, session, flash, request, redirect
 from flask_bootstrap import Bootstrap
-import pymysql.cursors
 import os
 from flask_ckeditor import CKEditor
 import pymysql
 from pymysql import cursors
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
+import stripe
+
 
 host = "localhost"
 user = "root"
@@ -19,12 +20,21 @@ cursor = conn.cursor()
 
 cursor1 = conn.cursor(cursors.DictCursor)
 
+#cursor.execute("ALTER TABLE blog ADD email VARCHAR(250) NOT NULL")
 
 app = Flask(__name__)
 Bootstrap(app)
 ckeditor = CKEditor(app)
 
 app.config['SECRET_KEY'] = os.urandom(24)
+
+#stripe_keys = {
+#  'secret_key': os.environ['SECRET_KEY'],
+#  'publishable_key': os.environ['PUBLISHABLE_KEY']
+#}
+
+
+
 @app.route('/')
 def index():
     result_blog = cursor1.execute("SELECT * FROM blog")
@@ -46,7 +56,7 @@ def login():
 		#res_data = cursor.fetchall()
 		if res_data > 0:
 			user = cursor1.fetchone()
-			if userDetails['password'] == user['password']:
+			if check_password_hash(user['password'],userDetails['password']):
 				session['login'] = True
 				session['firstName'] = user['first_name']
 				session['lastName'] = user['last_name']
