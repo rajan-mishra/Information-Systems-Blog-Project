@@ -19,7 +19,6 @@ cursor = conn.cursor()
 
 cursor1 = conn.cursor(cursors.DictCursor)
 
-#cursor.execute("ALTER TABLE blog ADD email VARCHAR(250) NOT NULL")
 
 app = Flask(__name__)
 Bootstrap(app)
