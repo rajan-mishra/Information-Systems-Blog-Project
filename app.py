@@ -138,7 +138,6 @@ def writeblog():
         conn.commit()
         flash("Successfully posted new blog", 'success')
         return redirect('/')
-
     return render_template('writeblog.html')
 
 if __name__ == '__main__' :
