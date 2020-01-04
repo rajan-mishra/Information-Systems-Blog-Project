@@ -40,9 +40,10 @@ def login():
 			user = cursor1.fetchone()
 			if check_password_hash(user['password'],userDetails['password']):
 				session['login'] = True
+                #session['email'] = user['email']
 				session['firstName'] = user['first_name']
 				session['lastName'] = user['last_name']
-				flash('Welcome ' + session['firstName'] +'! You have been successfully logged in', 'success')
+				flash('Welcome ' + session['firstName'] + "" + session['lastName'] + '! You have been successfully logged in', 'success')
 			else:
 				flash('Password does not match', 'danger')
 				return render_template('login.html')
@@ -58,7 +59,6 @@ def blogs(id):
     if result_blog > 0 :
         blog = cursor1.fetchone()
         return render_template('blogs.html', blog= blog)
-
     return "Blog Not Found"
 
 @app.route('/register/', methods=['GET','POST'] )
