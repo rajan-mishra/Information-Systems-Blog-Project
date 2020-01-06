@@ -38,10 +38,10 @@ def login():
 			user = cursor1.fetchone()
 			if check_password_hash(user['password'],userDetails['password']):
 				session['login'] = True
-                #session['email'] = user['email']
 				session['firstName'] = user['first_name']
 				session['lastName'] = user['last_name']
 				flash('Welcome ' + session['firstName'] + " " + session['lastName'] + '! You have been successfully logged in', 'success')
+
 			else:
 				flash('Password does not match', 'danger')
 				return render_template('login.html')
