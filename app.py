@@ -9,9 +9,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 conn = pymysql.connect(host = "localhost", user = "root", port = 3306,
                        password = "password@1", db = "blogbackend", cursorclass=pymysql.cursors.DictCursor)
 cursor = conn.cursor()
-
 cursor1 = conn.cursor(cursors.DictCursor)
-
 app = Flask(__name__)
 Bootstrap(app)
 ckeditor = CKEditor(app)
@@ -43,7 +41,7 @@ def login():
                 #session['email'] = user['email']
 				session['firstName'] = user['first_name']
 				session['lastName'] = user['last_name']
-				flash('Welcome ' + session['firstName'] + "" + session['lastName'] + '! You have been successfully logged in', 'success')
+				flash('Welcome ' + session['firstName'] + " " + session['lastName'] + '! You have been successfully logged in', 'success')
 			else:
 				flash('Password does not match', 'danger')
 				return render_template('login.html')
@@ -102,7 +100,6 @@ def editblogs(id):
         blog_form['body'] = blog['body']
         return render_template('editblogs.html', blog_form=blog_form)
 
-
 @app.route('/deleteblogs/<int:id>/')
 def deleteblogs(id):
 	cursor.execute("DELETE FROM blog WHERE blog_id = {}".format(id))
@@ -124,7 +121,6 @@ def logout():
     session.clear()
     flash("You have been logged out", 'info')
     return redirect('/')
-
 
 @app.route('/writeblog/', methods=['GET','POST'])
 def writeblog():
